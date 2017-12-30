@@ -15,12 +15,6 @@
  */
 package com.github.koshamo.jupower.fxgui;
 
-import java.awt.AWTException;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import com.github.koshamo.fiddler.Event;
 import com.github.koshamo.fiddler.jfx.FiddlerFxApp;
 
@@ -56,7 +50,7 @@ public class JuPowerGui extends FiddlerFxApp {
 		VBox vbox = new VBox();
 		
 		javax.swing.SwingUtilities.invokeLater(
-				() -> { systemTray = new SystemTrayIntegration(primaryStage); 
+				() -> { systemTray = new SystemTrayIntegration(primaryStage, getMessageBus()); 
 				});
 		
 		primaryStage.setScene(new Scene(vbox, 200, 100));
