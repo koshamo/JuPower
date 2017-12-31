@@ -2,6 +2,7 @@ import com.github.koshamo.fiddler.MessageBus;
 import com.github.koshamo.fiddler.jfx.FiddlerFxApp;
 import com.github.koshamo.fiddler.jfx.FiddlerFxAppRunner;
 import com.github.koshamo.jupower.fxgui.JuPowerGui;
+import com.github.koshamo.jupower.systembus.UpowerModule;
 
 /*
  * Copyright [2017] [Dr. Jochen Raﬂler]
@@ -32,6 +33,7 @@ public class JuPower {
 		MessageBus messageBus = new MessageBus();
 		new Thread(new FiddlerFxAppRunner(JuPowerGui.class, args)).start();
 		FiddlerFxApp.setMessageBus(messageBus);
+		new UpowerModule(messageBus);
 	}
 
 }

@@ -15,7 +15,9 @@
  */
 package com.github.koshamo.jupower.fxgui;
 
+import com.github.koshamo.fiddler.DataEvent;
 import com.github.koshamo.fiddler.Event;
+import com.github.koshamo.fiddler.MessageBus.ListenerType;
 import com.github.koshamo.fiddler.jfx.FiddlerFxApp;
 
 import javafx.application.Platform;
@@ -31,15 +33,9 @@ public class JuPowerGui extends FiddlerFxApp {
 
 	private Stage primaryStage;
 	private SystemTrayIntegration systemTray;
+	private int batteryLoad;
+	private boolean charging;
 	
-	/* (non-Javadoc)
-	 * @see com.github.koshamo.fiddler.EventHandler#handle(com.github.koshamo.fiddler.Event)
-	 */
-	@Override
-	public void handle(Event event) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/* (non-Javadoc)
 	 * @see javafx.application.Application#start(javafx.stage.Stage)
@@ -50,7 +46,7 @@ public class JuPowerGui extends FiddlerFxApp {
 		VBox vbox = new VBox();
 		
 		javax.swing.SwingUtilities.invokeLater(
-				() -> { systemTray = new SystemTrayIntegration(primaryStage, getMessageBus()); 
+				() -> { systemTray = new SystemTrayIntegration(primaryStage, this, getMessageBus()); 
 				});
 		
 		primaryStage.setScene(new Scene(vbox, 200, 100));
@@ -58,7 +54,40 @@ public class JuPowerGui extends FiddlerFxApp {
 //		primaryStage.show();
 		// prevent application to be closed, when last window is closed
 		Platform.setImplicitExit(false);
+		getMessageBus().registerAllEvents(this, ListenerType.TARGET);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.github.koshamo.fiddler.EventHandler#shutdown()
+	 */
+	@Override
+	public void shutdown() {
+		getMessageBus().unregisterAllEvents(this);
+		Platform.exit();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.github.koshamo.fiddler.EventHandler#handle(com.github.koshamo.fiddler.Event)
+	 */
+	@Override
+	public void handle(Event event) {
+		if (event instanceof DataEvent) {
+			DataEvent<String,?> de = (DataEvent<String,?>) event;
+			if (de.getMetaInformation().equals("Battery")) {
+				DataEvent<String, Integer> deBat = 
+						(DataEvent<String, Integer>) event;
+				batteryLoad = deBat.getData().intValue();
+				systemTray.updateIcon(batteryLoad, charging);
+			}
+			if (de.getMetaInformation().equals("Charging")) {
+				DataEvent<String, Boolean> deBat = 
+						(DataEvent<String, Boolean>) event;
+				charging = deBat.getData().booleanValue();
+				systemTray.updateIcon(batteryLoad, charging);
+			}
+		
+		}
+	}
+
 
 }

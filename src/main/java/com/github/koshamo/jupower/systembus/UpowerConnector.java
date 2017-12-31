@@ -31,12 +31,23 @@ public class UpowerConnector {
 	private UpowerConnector() {
 		// prevent instantiation 
 	}
-	
+	private final static String UPOWER_CMD = "upower";
+	private final static String VERSION_CMD = "-v";
+	private final static String VERSION_KEY = "client";
+	private final static String DEVICES_CMD = "-e";
+	private final static String DETAILS_CMD = "-i";
+	private final static String BATTERY_LOAD_KEY = "percentage";
+	private final static String CHARGING_KEY = "online";
+	private final static String CHARGING_VALUE = "yes";
+	private final static String SPLITTER = ":";
+	public final static String BATTERY = "battery";
+	public final static String LINE_POWER = "line_power";
+
 	public static String getVersion() {
-		List<String> list = listInfos("upower", "-v");
+		List<String> list = listInfos(UPOWER_CMD, VERSION_CMD);
 		int start = 0;
 		for (String line : list) {
-			if (line.contains("client")) {
+			if (line.contains(VERSION_KEY)) {
 				for (int i = 0; i < line.length(); ++i) {
 					if (Character.isDigit(line.charAt(i))) {
 						start = i;
@@ -50,25 +61,25 @@ public class UpowerConnector {
 	}
 	
 	public static List<String> getDevices() {
-		return listInfos("upower", "-e");
+		return listInfos(UPOWER_CMD, DEVICES_CMD);
 	}
 	
 	public static void printInfo(String device) {
-		List<String> infos = listInfos("upower", "-i", device);
+		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, device);
 		infos.forEach(System.out::println);
 	}
 	
 	public static int getBatteryLoad(String battery) {
-		List<String> infos = listInfos("upower", "-i", battery);
-		String value = findValue(infos, "percentage");
+		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, battery);
+		String value = findValue(infos, BATTERY_LOAD_KEY);
 		
 		return Integer.valueOf(value.substring(0, value.length()-1)).intValue();
 	}
 	
 	public static boolean isCharging(String linePower) {
-		List<String> infos = listInfos("upower", "-i", linePower);
-		String value = findValue(infos, "online");
-		if (value.equals("yes"))
+		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, linePower);
+		String value = findValue(infos, CHARGING_KEY);
+		if (value.equals(CHARGING_VALUE))
 			return true;
 		else
 			return false;
@@ -77,7 +88,7 @@ public class UpowerConnector {
 	private static String findValue(List<String> list, String key) {
 		return list.stream()
 				.filter(s -> s.contains(key))
-				.flatMap(s -> Stream.of(s.split(":")))
+				.flatMap(s -> Stream.of(s.split(SPLITTER)))
 				.skip(1)
 				.map(s -> s.trim())
 				.findAny()
@@ -92,7 +103,8 @@ public class UpowerConnector {
 		try {
 			pro = pb.start();
 			pro.waitFor();
-			BufferedReader bis = new BufferedReader(new InputStreamReader(pro.getInputStream()));
+			BufferedReader bis = new BufferedReader(
+					new InputStreamReader(pro.getInputStream()));
 			String line;
 			while ((line = bis.readLine()) != null)
 				info.add(line);
