@@ -18,6 +18,7 @@ package com.github.koshamo.jupower.fxgui;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
@@ -45,6 +46,7 @@ public class SystemTrayIntegration {
 	private final MessageBus messageBus;
 	private final int WIDTH = 32;
 	private final int HEIGHT = 32;
+	
 	
 
 	public SystemTrayIntegration (final javafx.stage.Stage stage, 
@@ -113,14 +115,14 @@ public class SystemTrayIntegration {
 		Graphics2D graphics = image.createGraphics();
 		graphics.setColor(Color.BLACK);
 		graphics.fillRect(0, 0, WIDTH, HEIGHT);
-		
+
 		// draw battery outlines
 		Rectangle rectBody = new Rectangle(12, 4, 15, 23);
 		Rectangle rectSchnippel = new Rectangle(16, 1, 8, 3);
 		graphics.setColor(Color.lightGray);
 		graphics.draw(rectBody);
 		graphics.draw(rectSchnippel);
-		
+
 		// draw battery fillings depending on capacity
 		if (capacity > 80)
 			graphics.setColor(Color.GREEN);
@@ -144,7 +146,7 @@ public class SystemTrayIntegration {
 			graphics.fillRect(14, 21, 12, 4);
 		// print always
 		graphics.fillRect(14, 26, 12, 1);
-		
+
 		// draw charging
 		graphics.setColor(Color.GRAY);
 		if (charging) {
@@ -157,10 +159,8 @@ public class SystemTrayIntegration {
 			graphics.fillRect(5, 17, 2, 7);
 			graphics.fillRect(3, 17, 6, 2);
 		}
-		
-//		trayIcon.getImage().flush();
+
 		trayIcon.setImage(image);
-//		image.flush();
 		String tooltip;
 		if (charging)
 			tooltip = capacity + "%, charging";
