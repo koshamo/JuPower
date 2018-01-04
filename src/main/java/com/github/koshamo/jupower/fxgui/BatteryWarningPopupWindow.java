@@ -16,6 +16,7 @@
 package com.github.koshamo.jupower.fxgui;
 
 
+import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 /**
  * @author jochen
@@ -52,7 +54,6 @@ public class BatteryWarningPopupWindow extends Stage {
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		double maxWidth = screen.getWidth() * 0.7;
 		double maxHeight = screen.getHeight() * 0.2;
-		System.out.println("max width: " + maxWidth + ", max height: " + maxHeight);
 		Rectangle border;
 		if (type == WarningType.EARLY)
 			border = new Rectangle(maxWidth, maxHeight, Color.ORANGE);
@@ -64,6 +65,12 @@ public class BatteryWarningPopupWindow extends Stage {
 		lblWarning.setFont(new Font(maxHeight * 0.2));
 		pane.getChildren().addAll(border, inlay, lblWarning);
 		
+		FadeTransition ft = new FadeTransition(Duration.millis(5000), pane);
+		ft.setFromValue(1.0);
+		ft.setToValue(0.2);
+		ft.play();
+		ft.setOnFinished(p -> hide());
+
 		Scene scene = new Scene(pane, maxWidth, maxHeight);
 		this.setScene(scene);
 	}

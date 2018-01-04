@@ -63,24 +63,21 @@ public class JuPowerGui extends FiddlerFxApp {
 				});
 		
 		HBox hbox = new HBox();
-		BatteryWarningPopupWindow bwpw = new BatteryWarningPopupWindow();
-		bwpw.setAlwaysOnTop(true);
-		bwpw.initModality(Modality.NONE);
-		Button btnShow = new Button("show Popup");
-		btnShow.setOnAction(p -> {
-			if (!bwpw.isShowing())
-			bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.EARLY);
-		});
-		Button btnHide = new Button("hide Popup");
-		btnHide.setOnAction(p -> {
-			if (bwpw.isShowing())
-				bwpw.hide();
-		});
-		hbox.getChildren().addAll(btnShow, btnHide);
+//		BatteryWarningPopupWindow bwpw = new BatteryWarningPopupWindow();
+//		Button btnShow = new Button("show Popup");
+//		btnShow.setOnAction(p -> {
+//			if (!bwpw.isShowing())
+//				bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.EARLY);
+//		});
+//		Button btnHide = new Button("hide Popup");
+//		btnHide.setOnAction(p -> {
+//			if (bwpw.isShowing())
+//				bwpw.hide();
+//		});
+//		hbox.getChildren().addAll(btnShow, btnHide);
 		
 		primaryStage.setScene(new Scene(hbox, 200, 100));
 		primaryStage.setTitle("JuPower");
-//		primaryStage.show();
 		// prevent application to be closed, when last window is closed
 		Platform.setImplicitExit(false);
 		
@@ -92,7 +89,8 @@ public class JuPowerGui extends FiddlerFxApp {
 	private void createProperties() {
 		batteryLoad = new SimpleIntegerProperty(0);
 		charging = new SimpleBooleanProperty(false);
-	
+		BatteryWarningPopupWindow bwpw = new BatteryWarningPopupWindow();
+
 		batteryLoad.addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -100,13 +98,13 @@ public class JuPowerGui extends FiddlerFxApp {
 				// battery load falling beneath EARLY_WARNING
 				if (newValue.intValue() == EARLY_WARNING && 
 						oldValue.intValue() == EARLY_WARNING + 1)
-					// TODO: add WARNING popup window
-					;
+					if (!bwpw.isShowing())
+						bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.EARLY);
 				// battery load falling beneath URGENT_WARNING
 				if (newValue.intValue() == URGENT_WARNING && 
 						oldValue.intValue() == URGENT_WARNING + 1)
-					// TODO: add WARNING popup window
-					;
+					if (!bwpw.isShowing())
+						bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.URGENT);
 			}
 		});
 		
