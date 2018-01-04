@@ -28,10 +28,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -40,15 +37,13 @@ import javafx.stage.Stage;
  */
 public class JuPowerGui extends FiddlerFxApp {
 
-	private Stage primaryStage;
-	private SystemTrayIntegration systemTray;
-	private IntegerProperty batteryLoad;
-	private BooleanProperty charging;
+//	private Stage primaryStage;
+	SystemTrayIntegration systemTray;
+	IntegerProperty batteryLoad;
+	BooleanProperty charging;
 	
 	private final int EARLY_WARNING = 20;
-	private boolean earlyWarned;
 	private final int URGENT_WARNING = 5;
-	private boolean urgentWarned;
 	
 
 	/* (non-Javadoc)
@@ -56,25 +51,13 @@ public class JuPowerGui extends FiddlerFxApp {
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		this.primaryStage = primaryStage;
+//		this.primaryStage = primaryStage;
 
 		javax.swing.SwingUtilities.invokeLater(
 				() -> { systemTray = new SystemTrayIntegration(primaryStage, this, getMessageBus()); 
 				});
 		
 		HBox hbox = new HBox();
-//		BatteryWarningPopupWindow bwpw = new BatteryWarningPopupWindow();
-//		Button btnShow = new Button("show Popup");
-//		btnShow.setOnAction(p -> {
-//			if (!bwpw.isShowing())
-//				bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.EARLY);
-//		});
-//		Button btnHide = new Button("hide Popup");
-//		btnHide.setOnAction(p -> {
-//			if (bwpw.isShowing())
-//				bwpw.hide();
-//		});
-//		hbox.getChildren().addAll(btnShow, btnHide);
 		
 		primaryStage.setScene(new Scene(hbox, 200, 100));
 		primaryStage.setTitle("JuPower");
@@ -111,7 +94,7 @@ public class JuPowerGui extends FiddlerFxApp {
 		charging.addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				systemTray.updateIcon(batteryLoad.get(), newValue);
+				systemTray.updateIcon(batteryLoad.get(), newValue.booleanValue());
 			}
 		});
 	}
@@ -136,14 +119,12 @@ public class JuPowerGui extends FiddlerFxApp {
 			if (de.getMetaInformation().equals("Battery")) {
 				DataEvent<String, Integer> deBat = 
 						(DataEvent<String, Integer>) event;
-				batteryLoad.set(deBat.getData().intValue());
-//				systemTray.updateIcon(batteryLoad.get(), charging.get());
+				Platform.runLater(()-> batteryLoad.set(deBat.getData().intValue()));
 			}
 			if (de.getMetaInformation().equals("Charging")) {
 				DataEvent<String, Boolean> deBat = 
 						(DataEvent<String, Boolean>) event;
-				charging.set(deBat.getData().booleanValue());
-//				systemTray.updateIcon(batteryLoad.get(), charging.get());
+				Platform.runLater(()-> charging.set(deBat.getData().booleanValue()));
 			}
 		
 		}

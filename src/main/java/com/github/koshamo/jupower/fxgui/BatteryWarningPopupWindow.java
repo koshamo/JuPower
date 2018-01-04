@@ -38,6 +38,7 @@ import javafx.util.Duration;
 public class BatteryWarningPopupWindow extends Stage {
 
 	public enum WarningType { EARLY, URGENT };
+	private final int BORDER_SIZE = 20;
 	
 	private int batteryLoad;
 	private WarningType type;
@@ -59,7 +60,8 @@ public class BatteryWarningPopupWindow extends Stage {
 			border = new Rectangle(maxWidth, maxHeight, Color.ORANGE);
 		else
 			border = new Rectangle(maxWidth, maxHeight, Color.RED);
-		Rectangle inlay = new Rectangle(maxWidth - 20, maxHeight - 20, Color.WHITE);
+		Rectangle inlay = new Rectangle(
+				maxWidth - BORDER_SIZE, maxHeight - BORDER_SIZE, Color.WHITE);
 		String text = "Battery Power is low: " + batteryLoad + "%";
 		Label lblWarning = new Label(text);
 		lblWarning.setFont(new Font(maxHeight * 0.2));

@@ -18,7 +18,6 @@ package com.github.koshamo.jupower.fxgui;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
@@ -46,8 +45,13 @@ public class SystemTrayIntegration {
 	private final MessageBus messageBus;
 	private final int WIDTH = 32;
 	private final int HEIGHT = 32;
-	
-	
+	private final int YELLOW_UPPER_BOUND = 74;
+	private final int RED_UPPER_BOUND = 24;
+	private final int LOAD_LOW = 5;
+	private final int LOAD_MEDIUM_LOW = 24;
+	private final int LOAD_MEDIUM_HIGH = 49;
+	private final int LOAD_FULL = 79;
+	private final int LOAD_COMPLETE = 97;
 
 	public SystemTrayIntegration (final javafx.stage.Stage stage, 
 			final EventHandler eventSource, final MessageBus messageBus) {
@@ -59,7 +63,7 @@ public class SystemTrayIntegration {
 	
 	private void addAppToTray()  {
 		// initialize AWT toolkit
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Toolkit.getDefaultToolkit();
 		
 		if (!SystemTray.isSupported()) {
 //			throw new UnsupportedLookAndFeelException("System Tray is not supported on this system!");
@@ -124,24 +128,24 @@ public class SystemTrayIntegration {
 		graphics.draw(rectSchnippel);
 
 		// draw battery fillings depending on capacity
-		if (capacity > 80)
+		if (capacity > YELLOW_UPPER_BOUND)
 			graphics.setColor(Color.GREEN);
-		else if (capacity > 25)
+		else if (capacity > RED_UPPER_BOUND)
 			graphics.setColor(Color.YELLOW);
 		else
 			graphics.setColor(Color.RED);
-		if (capacity > 97)
+		if (capacity > LOAD_COMPLETE)
 			graphics.fillRect(18, 2, 5, 2);
-		if (capacity > 80)
+		if (capacity > LOAD_FULL)
 			// full
 			graphics.fillRect(14, 6, 12, 4);
-		if (capacity > 50) 
+		if (capacity > LOAD_MEDIUM_HIGH) 
 			// more than half
 			graphics.fillRect(14, 11, 12, 4); 
-		if (capacity > 25) 
+		if (capacity > LOAD_MEDIUM_LOW) 
 			// less than half
 			graphics.fillRect(14, 16, 12, 4);
-		if (capacity > 5) 
+		if (capacity > LOAD_LOW) 
 			// low
 			graphics.fillRect(14, 21, 12, 4);
 		// print always
