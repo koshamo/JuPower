@@ -28,7 +28,10 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -54,13 +57,28 @@ public class JuPowerGui extends FiddlerFxApp {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
-		VBox vbox = new VBox();
-		
+
 		javax.swing.SwingUtilities.invokeLater(
 				() -> { systemTray = new SystemTrayIntegration(primaryStage, this, getMessageBus()); 
 				});
 		
-		primaryStage.setScene(new Scene(vbox, 200, 100));
+		HBox hbox = new HBox();
+		BatteryWarningPopupWindow bwpw = new BatteryWarningPopupWindow();
+		bwpw.setAlwaysOnTop(true);
+		bwpw.initModality(Modality.NONE);
+		Button btnShow = new Button("show Popup");
+		btnShow.setOnAction(p -> {
+			if (!bwpw.isShowing())
+			bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.EARLY);
+		});
+		Button btnHide = new Button("hide Popup");
+		btnHide.setOnAction(p -> {
+			if (bwpw.isShowing())
+				bwpw.hide();
+		});
+		hbox.getChildren().addAll(btnShow, btnHide);
+		
+		primaryStage.setScene(new Scene(hbox, 200, 100));
 		primaryStage.setTitle("JuPower");
 //		primaryStage.show();
 		// prevent application to be closed, when last window is closed
