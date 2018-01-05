@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -42,7 +43,7 @@ public class UpowerConnector {
 	private final static String SPLITTER = ":";
 	public final static String BATTERY = "battery";
 	public final static String LINE_POWER = "line_power";
-
+	
 	public static String getVersion() {
 		List<String> list = listInfos(UPOWER_CMD, VERSION_CMD);
 		int start = 0;
@@ -71,29 +72,30 @@ public class UpowerConnector {
 	
 	public static int getBatteryLoad(String battery) {
 		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, battery);
-		String value = findValue(infos, BATTERY_LOAD_KEY);
-		
-		return Integer.valueOf(value.substring(0, value.length()-1)).intValue();
+		Optional<String> opt = findValue(infos, BATTERY_LOAD_KEY);
+		if (opt.isPresent())
+			return Integer.valueOf(opt.get().substring(0, opt.get().length()-1)).intValue();
+		return 0;
 	}
 	
 	public static boolean isCharging(String linePower) {
 		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, linePower);
-		String value = findValue(infos, CHARGING_KEY);
-		if (value.equals(CHARGING_VALUE))
+		Optional<String> opt =findValue(infos, CHARGING_KEY); 
+		if (opt.isPresent() && opt.get().equals(CHARGING_VALUE))
 			return true;
 		else
 			return false;
 	}
 	
-	private static String findValue(List<String> list, String key) {
+	private static Optional<String> findValue(List<String> list, String key) {
+		if (list.isEmpty())
+			return Optional.empty();
 		return list.stream()
 				.filter(s -> s.contains(key))
 				.flatMap(s -> Stream.of(s.split(SPLITTER)))
 				.skip(1)
 				.map(s -> s.trim())
-				.findAny()
-				.get();
-
+				.findAny();
 	}
 	
 	private static List<String> listInfos(String... cmdarray) {
