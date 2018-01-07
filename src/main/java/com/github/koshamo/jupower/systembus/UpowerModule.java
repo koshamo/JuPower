@@ -159,10 +159,10 @@ public class UpowerModule implements EventHandler {
 		}
 		
 		private void checkCharging(String device) {
-			boolean charging = UpowerConnector.isCharging(device);
+			boolean charging = UpowerConnector.isSupplied(device);
 			messageBus.postEvent(
 					new DataEvent<String, Boolean>(
-							UpowerModule.this, null, "Charging", Boolean.valueOf(charging)));
+							UpowerModule.this, null, "Supplying", Boolean.valueOf(charging)));
 		}
 
 		public void stop() {

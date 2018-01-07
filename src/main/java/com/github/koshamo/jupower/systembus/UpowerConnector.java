@@ -79,7 +79,7 @@ public class UpowerConnector {
 		return 0;
 	}
 	
-	public static boolean isCharging(String linePower) {
+	public static boolean isSupplied(String linePower) {
 		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, linePower);
 		Optional<String> opt =findValue(infos, CHARGING_KEY); 
 		if (opt.isPresent() && opt.get().equals(CHARGING_VALUE))

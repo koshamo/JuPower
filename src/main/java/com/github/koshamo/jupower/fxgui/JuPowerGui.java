@@ -121,7 +121,7 @@ public class JuPowerGui extends FiddlerFxApp {
 						(DataEvent<String, Integer>) event;
 				Platform.runLater(()-> batteryLoad.set(deBat.getData().intValue()));
 			}
-			if (de.getMetaInformation().equals("Charging")) {
+			if (de.getMetaInformation().equals("Supplying")) {
 				DataEvent<String, Boolean> deBat = 
 						(DataEvent<String, Boolean>) event;
 				Platform.runLater(()-> charging.set(deBat.getData().booleanValue()));
