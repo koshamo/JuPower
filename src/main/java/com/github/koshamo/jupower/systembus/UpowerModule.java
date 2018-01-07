@@ -148,7 +148,10 @@ public class UpowerModule implements EventHandler {
 			while (run) {
 				devices.stream()
 					.filter(d -> d.contains(UpowerConnector.LINE_POWER))
-					.forEach(this::checkCharging);
+					.forEach(this::checkSupplying);
+				devices.stream()
+				.filter(d -> d.contains(UpowerConnector.BATTERY))
+				.forEach(this::checkCharging);
 				try {
 					Thread.sleep(CHARGE_CHECK);
 				} catch (InterruptedException e) {
@@ -158,11 +161,18 @@ public class UpowerModule implements EventHandler {
 			}
 		}
 		
-		private void checkCharging(String device) {
-			boolean charging = UpowerConnector.isSupplied(device);
+		private void checkSupplying(String device) {
+			boolean supplying = UpowerConnector.isSupplying(device);
 			messageBus.postEvent(
 					new DataEvent<String, Boolean>(
-							UpowerModule.this, null, "Supplying", Boolean.valueOf(charging)));
+							UpowerModule.this, null, "Supplying", Boolean.valueOf(supplying)));
+		}
+
+		private void checkCharging(String device) {
+			boolean charging = UpowerConnector.isCharging(device);
+			messageBus.postEvent(
+					new DataEvent<String, Boolean>(
+							UpowerModule.this, null, "Charging", Boolean.valueOf(charging)));
 		}
 
 		public void stop() {

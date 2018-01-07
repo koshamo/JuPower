@@ -39,8 +39,9 @@ public class JuPowerGui extends FiddlerFxApp {
 
 //	private Stage primaryStage;
 	SystemTrayIntegration systemTray;
-	IntegerProperty batteryLoad;
-	BooleanProperty charging;
+	IntegerProperty onBatteryLoad;
+	BooleanProperty onSupplying;
+	BooleanProperty onCharging;
 	
 	private final int EARLY_WARNING = 20;
 	private final int URGENT_WARNING = 5;
@@ -70,31 +71,39 @@ public class JuPowerGui extends FiddlerFxApp {
 
 	
 	private void createProperties() {
-		batteryLoad = new SimpleIntegerProperty(0);
-		charging = new SimpleBooleanProperty(false);
+		onBatteryLoad = new SimpleIntegerProperty(0);
+		onSupplying = new SimpleBooleanProperty(false);
+		onCharging = new SimpleBooleanProperty(false);
 		BatteryWarningPopupWindow bwpw = new BatteryWarningPopupWindow();
 
-		batteryLoad.addListener(new ChangeListener<Number>() {
+		onBatteryLoad.addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				systemTray.updateIcon(newValue.intValue(), charging.get());
+				systemTray.updateIcon(newValue.intValue(), onSupplying.get(), onCharging.get());
 				// battery load falling beneath EARLY_WARNING
 				if (newValue.intValue() == EARLY_WARNING && 
 						oldValue.intValue() == EARLY_WARNING + 1)
 					if (!bwpw.isShowing())
-						bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.EARLY);
+						bwpw.show(onBatteryLoad.get(), BatteryWarningPopupWindow.WarningType.EARLY);
 				// battery load falling beneath URGENT_WARNING
 				if (newValue.intValue() == URGENT_WARNING && 
 						oldValue.intValue() == URGENT_WARNING + 1)
 					if (!bwpw.isShowing())
-						bwpw.show(batteryLoad.get(), BatteryWarningPopupWindow.WarningType.URGENT);
+						bwpw.show(onBatteryLoad.get(), BatteryWarningPopupWindow.WarningType.URGENT);
 			}
 		});
 		
-		charging.addListener(new ChangeListener<Boolean>() {
+		onSupplying.addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				systemTray.updateIcon(batteryLoad.get(), newValue.booleanValue());
+				systemTray.updateIcon(onBatteryLoad.get(), newValue.booleanValue(), onCharging.get());
+			}
+		});
+
+		onCharging.addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				systemTray.updateIcon(onBatteryLoad.get(), onSupplying.get(), newValue.booleanValue());
 			}
 		});
 	}
@@ -119,12 +128,17 @@ public class JuPowerGui extends FiddlerFxApp {
 			if (de.getMetaInformation().equals("Battery")) {
 				DataEvent<String, Integer> deBat = 
 						(DataEvent<String, Integer>) event;
-				Platform.runLater(()-> batteryLoad.set(deBat.getData().intValue()));
+				Platform.runLater(()-> onBatteryLoad.set(deBat.getData().intValue()));
 			}
 			if (de.getMetaInformation().equals("Supplying")) {
 				DataEvent<String, Boolean> deBat = 
 						(DataEvent<String, Boolean>) event;
-				Platform.runLater(()-> charging.set(deBat.getData().booleanValue()));
+				Platform.runLater(()-> onSupplying.set(deBat.getData().booleanValue()));
+			}
+			if (de.getMetaInformation().equals("Charging")) {
+				DataEvent<String, Boolean> deBat = 
+						(DataEvent<String, Boolean>) event;
+				Platform.runLater(()-> onCharging.set(deBat.getData().booleanValue()));
 			}
 		
 		}

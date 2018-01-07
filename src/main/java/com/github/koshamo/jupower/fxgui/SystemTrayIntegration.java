@@ -72,7 +72,7 @@ public class SystemTrayIntegration {
 		}
 		systemTray = SystemTray.getSystemTray();
 		trayIcon = new TrayIcon(new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB));
-		updateIcon(0, false);
+		updateIcon(0, false, false);
 		trayIcon.addActionListener(event -> Platform.runLater(this::toggleStageShowing));
 		
 		MenuItem itmShowHide = new MenuItem("Show / Hide");
@@ -109,7 +109,8 @@ public class SystemTrayIntegration {
 		}
 	}
 	
-	public void updateIcon(final int capacity, final boolean charging) {
+	public void updateIcon(final int capacity, final boolean supplying, 
+			final boolean charging) {
 		if (capacity < 0 || capacity > 100) {
 			// TODO: seriously handle capacity check
 			System.out.println("Capacity error");
@@ -153,7 +154,7 @@ public class SystemTrayIntegration {
 
 		// draw charging
 		graphics.setColor(Color.GRAY);
-		if (charging) {
+		if (supplying) {
 			graphics.fillRect(5, 6, 2, 20);
 			graphics.fillRect(3, 14, 6, 4);
 		}
@@ -166,8 +167,11 @@ public class SystemTrayIntegration {
 
 		trayIcon.setImage(image);
 		String tooltip;
-		if (charging)
-			tooltip = capacity + "%, charging";
+		if (supplying)
+			if (charging)
+				tooltip = capacity + "%, charging";
+			else
+				tooltip = "on line power, battery: " + capacity + "%";
 		else
 			tooltip = "on battery: " + capacity + "%";
 		trayIcon.setToolTip(tooltip);

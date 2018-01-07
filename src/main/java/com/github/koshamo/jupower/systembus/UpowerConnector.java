@@ -39,8 +39,10 @@ public class UpowerConnector {
 	private final static String DEVICES_CMD = "-e";
 	private final static String DETAILS_CMD = "-i";
 	private final static String BATTERY_LOAD_KEY = "percentage";
-	private final static String CHARGING_KEY = "online";
-	private final static String CHARGING_VALUE = "yes";
+	private final static String CHARGING_KEY = "state";
+	private final static String CHARGING_VALUE = "charging";
+	private final static String SUPPLYING_KEY = "online";
+	private final static String SUPPLYING_VALUE = "yes";
 	private final static String SPLITTER = ":";
 	public final static String BATTERY = "battery";
 	public final static String LINE_POWER = "line_power";
@@ -79,10 +81,18 @@ public class UpowerConnector {
 		return 0;
 	}
 	
-	public static boolean isSupplied(String linePower) {
-		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, linePower);
-		Optional<String> opt =findValue(infos, CHARGING_KEY); 
+	public static boolean isCharging(String battery) {
+		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, battery);
+		Optional<String> opt = findValue(infos, CHARGING_KEY);
 		if (opt.isPresent() && opt.get().equals(CHARGING_VALUE))
+			return true;
+		return false;
+	}
+
+	public static boolean isSupplying(String linePower) {
+		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, linePower);
+		Optional<String> opt =findValue(infos, SUPPLYING_KEY); 
+		if (opt.isPresent() && opt.get().equals(SUPPLYING_VALUE))
 			return true;
 		else
 			return false;
