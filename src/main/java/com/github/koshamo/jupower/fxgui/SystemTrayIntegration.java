@@ -121,8 +121,8 @@ public class SystemTrayIntegration {
 		graphics.fillRect(0, 0, WIDTH, HEIGHT);
 
 		// draw battery outlines
-		Rectangle rectBody = new Rectangle(12, 4, 15, 23);
-		Rectangle rectSchnippel = new Rectangle(16, 1, 8, 3);
+		Rectangle rectBody = new Rectangle(12, 5, 15, 23);
+		Rectangle rectSchnippel = new Rectangle(16, 2, 8, 3);
 		graphics.setColor(Color.lightGray);
 		graphics.draw(rectBody);
 		graphics.draw(rectSchnippel);
@@ -135,33 +135,33 @@ public class SystemTrayIntegration {
 		else
 			graphics.setColor(Color.RED);
 		if (capacity > LOAD_COMPLETE)
-			graphics.fillRect(18, 2, 5, 2);
+			graphics.fillRect(18, 3, 5, 2);
 		if (capacity > LOAD_FULL)
 			// full
-			graphics.fillRect(14, 6, 12, 4);
+			graphics.fillRect(14, 7, 12, 4);
 		if (capacity > LOAD_MEDIUM_HIGH) 
 			// more than half
-			graphics.fillRect(14, 11, 12, 4); 
+			graphics.fillRect(14, 12, 12, 4); 
 		if (capacity > LOAD_MEDIUM_LOW) 
 			// less than half
-			graphics.fillRect(14, 16, 12, 4);
+			graphics.fillRect(14, 17, 12, 4);
 		if (capacity > LOAD_LOW) 
 			// low
-			graphics.fillRect(14, 21, 12, 4);
+			graphics.fillRect(14, 22, 12, 4);
 		// print always
-		graphics.fillRect(14, 26, 12, 1);
+		graphics.fillRect(14, 27, 12, 1);
 
 		// draw charging
 		graphics.setColor(Color.GRAY);
 		if (charging) {
-			graphics.fillRect(5, 5, 2, 20);
-			graphics.fillRect(3, 13, 6, 4);
+			graphics.fillRect(5, 6, 2, 20);
+			graphics.fillRect(3, 14, 6, 4);
 		}
 		else {
-			graphics.fillRect(5, 5, 2, 7);
-			graphics.fillRect(3, 10, 6, 2);
-			graphics.fillRect(5, 17, 2, 7);
-			graphics.fillRect(3, 17, 6, 2);
+			graphics.fillRect(5, 6, 2, 7);
+			graphics.fillRect(3, 11, 6, 2);
+			graphics.fillRect(5, 18, 2, 7);
+			graphics.fillRect(3, 18, 6, 2);
 		}
 
 		trayIcon.setImage(image);

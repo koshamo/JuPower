@@ -32,6 +32,7 @@ public class UpowerConnector {
 	private UpowerConnector() {
 		// prevent instantiation 
 	}
+	
 	private final static String UPOWER_CMD = "upower";
 	private final static String VERSION_CMD = "-v";
 	private final static String VERSION_KEY = "client";
