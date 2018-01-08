@@ -113,7 +113,7 @@ public class UpowerModule implements EventHandler {
 		public void run() {
 			while (run) {
 				devices.stream()
-					.filter(d -> d.contains(UpowerConnector.BATTERY))
+					.filter(d -> d.contains(UpowerConnector.Upower.BATTERY.getKey()))
 					.forEach(this::checkBattery);
 				try {
 					Thread.sleep(BATTERY_CHECK);
@@ -147,10 +147,10 @@ public class UpowerModule implements EventHandler {
 		public void run() {
 			while (run) {
 				devices.stream()
-					.filter(d -> d.contains(UpowerConnector.LINE_POWER))
+					.filter(d -> d.contains(UpowerConnector.Upower.LINE_POWER.getKey()))
 					.forEach(this::checkSupplying);
 				devices.stream()
-				.filter(d -> d.contains(UpowerConnector.BATTERY))
+				.filter(d -> d.contains(UpowerConnector.Upower.BATTERY.getKey()))
 				.forEach(this::checkCharging);
 				try {
 					Thread.sleep(CHARGE_CHECK);

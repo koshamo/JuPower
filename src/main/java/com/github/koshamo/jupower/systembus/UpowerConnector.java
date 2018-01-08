@@ -33,25 +33,37 @@ public class UpowerConnector {
 		// prevent instantiation 
 	}
 	
-	private final static String UPOWER_CMD = "upower";
-	private final static String VERSION_CMD = "-v";
-	private final static String VERSION_KEY = "client";
-	private final static String DEVICES_CMD = "-e";
-	private final static String DETAILS_CMD = "-i";
-	private final static String BATTERY_LOAD_KEY = "percentage";
-	private final static String CHARGING_KEY = "state";
-	private final static String CHARGING_VALUE = "charging";
-	private final static String SUPPLYING_KEY = "online";
-	private final static String SUPPLYING_VALUE = "yes";
-	private final static String SPLITTER = ":";
-	public final static String BATTERY = "battery";
-	public final static String LINE_POWER = "line_power";
+	public enum Upower {
+		UPOWER_CMD ("upower"),
+		VERSION_CMD ("-v"),
+		VERSION_KEY ("client"),
+		DEVICES_CMD ("-e"),
+		DETAILS_CMD ("-i"),
+		BATTERY_LOAD_KEY ("percentage"),
+		CHARGING_KEY ("state"),
+		CHARGING_VALUE ("charging"),
+		SUPPLYING_KEY ("online"),
+		SUPPLYING_VALUE ("yes"),
+		SPLITTER (":"),
+		BATTERY ("battery"),
+		LINE_POWER ("line_power");
+		
+		private final String key;
+		
+		Upower(String key) {
+			this.key = key;
+		}
+		String getKey() {
+			return key;
+		}
+	}
 	
 	public static String getVersion() {
-		List<String> list = listInfos(UPOWER_CMD, VERSION_CMD);
+		List<String> list = 
+				listInfos(Upower.UPOWER_CMD.getKey(), Upower.VERSION_CMD.getKey());
 		int start = 0;
 		for (String line : list) {
-			if (line.contains(VERSION_KEY)) {
+			if (line.contains(Upower.VERSION_KEY.getKey())) {
 				for (int i = 0; i < line.length(); ++i) {
 					if (Character.isDigit(line.charAt(i))) {
 						start = i;
@@ -65,34 +77,38 @@ public class UpowerConnector {
 	}
 	
 	public static List<String> getDevices() {
-		return listInfos(UPOWER_CMD, DEVICES_CMD);
+		return listInfos(Upower.UPOWER_CMD.getKey(), Upower.DEVICES_CMD.getKey());
 	}
 	
 	public static void printInfo(String device) {
-		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, device);
+		List<String> infos = 
+				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), device);
 		infos.forEach(System.out::println);
 	}
 	
 	public static int getBatteryLoad(String battery) {
-		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, battery);
-		Optional<String> opt = findValue(infos, BATTERY_LOAD_KEY);
+		List<String> infos = 
+				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), battery);
+		Optional<String> opt = findValue(infos, Upower.BATTERY_LOAD_KEY.getKey());
 		if (opt.isPresent())
 			return Integer.valueOf(opt.get().substring(0, opt.get().length()-1)).intValue();
 		return 0;
 	}
 	
 	public static boolean isCharging(String battery) {
-		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, battery);
-		Optional<String> opt = findValue(infos, CHARGING_KEY);
-		if (opt.isPresent() && opt.get().equals(CHARGING_VALUE))
+		List<String> infos = 
+				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), battery);
+		Optional<String> opt = findValue(infos, Upower.CHARGING_KEY.getKey());
+		if (opt.isPresent() && opt.get().equals(Upower.CHARGING_VALUE.getKey()))
 			return true;
 		return false;
 	}
 
 	public static boolean isSupplying(String linePower) {
-		List<String> infos = listInfos(UPOWER_CMD, DETAILS_CMD, linePower);
-		Optional<String> opt =findValue(infos, SUPPLYING_KEY); 
-		if (opt.isPresent() && opt.get().equals(SUPPLYING_VALUE))
+		List<String> infos = 
+				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), linePower);
+		Optional<String> opt = findValue(infos, Upower.SUPPLYING_KEY.getKey()); 
+		if (opt.isPresent() && opt.get().equals(Upower.SUPPLYING_VALUE.getKey()))
 			return true;
 		else
 			return false;
@@ -103,7 +119,7 @@ public class UpowerConnector {
 			return Optional.empty();
 		return list.stream()
 				.filter(s -> s.contains(key))
-				.flatMap(s -> Stream.of(s.split(SPLITTER)))
+				.flatMap(s -> Stream.of(s.split(Upower.SPLITTER.getKey())))
 				.skip(1)
 				.map(s -> s.trim())
 				.findAny();
