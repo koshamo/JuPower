@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jupower.Upower;
+
 /**
  * @author jochen
  *
@@ -33,30 +35,6 @@ public class UpowerConnector {
 		// prevent instantiation 
 	}
 	
-	public enum Upower {
-		UPOWER_CMD ("upower"),
-		VERSION_CMD ("-v"),
-		VERSION_KEY ("client"),
-		DEVICES_CMD ("-e"),
-		DETAILS_CMD ("-i"),
-		BATTERY_LOAD_KEY ("percentage"),
-		CHARGING_KEY ("state"),
-		CHARGING_VALUE ("charging"),
-		SUPPLYING_KEY ("online"),
-		SUPPLYING_VALUE ("yes"),
-		SPLITTER (":"),
-		BATTERY ("battery"),
-		LINE_POWER ("line_power");
-		
-		private final String key;
-		
-		Upower(String key) {
-			this.key = key;
-		}
-		String getKey() {
-			return key;
-		}
-	}
 	
 	public static String getVersion() {
 		List<String> list = 

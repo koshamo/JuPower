@@ -1,3 +1,4 @@
+package jupower;
 import com.github.koshamo.fiddler.MessageBus;
 import com.github.koshamo.fiddler.jfx.FiddlerFxApp;
 import com.github.koshamo.fiddler.jfx.FiddlerFxAppRunner;
