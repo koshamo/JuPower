@@ -1,3 +1,10 @@
+package com.github.koshamo.jupower;
+import com.github.koshamo.fiddler.MessageBus;
+import com.github.koshamo.fiddler.jfx.FiddlerFxApp;
+import com.github.koshamo.fiddler.jfx.FiddlerFxAppRunner;
+import com.github.koshamo.jupower.fxgui.JuPowerGui;
+import com.github.koshamo.jupower.systembus.UpowerModule;
+
 /*
  * Copyright [2017] [Dr. Jochen Raﬂler]
  * 
@@ -13,34 +20,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package jupower;
 
 /**
  * @author jochen
  *
  */
-public enum Upower {
-	UPOWER_CMD ("upower"),
-	VERSION_CMD ("-v"),
-	VERSION_KEY ("client"),
-	DEVICES_CMD ("-e"),
-	DETAILS_CMD ("-i"),
-	BATTERY_LOAD_KEY ("percentage"),
-	CHARGING_KEY ("state"),
-	CHARGING_VALUE ("charging"),
-	SUPPLYING_KEY ("online"),
-	SUPPLYING_VALUE ("yes"),
-	SPLITTER (":"),
-	BATTERY ("battery"),
-	LINE_POWER ("line_power");
-	
-	private final String key;
-	
-	Upower(String key) {
-		this.key = key;
+public class JuPower {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		MessageBus messageBus = new MessageBus();
+		new Thread(new FiddlerFxAppRunner(JuPowerGui.class, args)).start();
+		FiddlerFxApp.setMessageBus(messageBus);
+		new UpowerModule(messageBus);
 	}
-	
-	public String getKey() {
-		return key;
-	}
+
 }

@@ -23,8 +23,7 @@ import com.github.koshamo.fiddler.EventHandler;
 import com.github.koshamo.fiddler.ExitEvent;
 import com.github.koshamo.fiddler.MessageBus;
 import com.github.koshamo.fiddler.MessageBus.ListenerType;
-
-import jupower.Upower;
+import com.github.koshamo.jupower.shared.Upower;
 
 /**
  * @author jochen
