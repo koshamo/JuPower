@@ -19,6 +19,8 @@ import com.github.koshamo.fiddler.DataEvent;
 import com.github.koshamo.fiddler.Event;
 import com.github.koshamo.fiddler.MessageBus.ListenerType;
 import com.github.koshamo.fiddler.jfx.FiddlerFxApp;
+import com.github.koshamo.jupower.shared.StrBoolDataEvent;
+import com.github.koshamo.jupower.shared.StrIntDataEvent;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -123,24 +125,34 @@ public class JuPowerGui extends FiddlerFxApp {
 	 */
 	@Override
 	public void handle(Event event) {
-		if (event instanceof DataEvent) {
-			DataEvent<String,?> de = (DataEvent<String,?>) event;
-			if (de.getMetaInformation().equals("Battery")) {
-				DataEvent<String, Integer> deBat = 
-						(DataEvent<String, Integer>) event;
-				Platform.runLater(()-> onBatteryLoad.set(deBat.getData().intValue()));
-			}
-			if (de.getMetaInformation().equals("Supplying")) {
-				DataEvent<String, Boolean> deBat = 
-						(DataEvent<String, Boolean>) event;
-				Platform.runLater(()-> onSupplying.set(deBat.getData().booleanValue()));
-			}
-			if (de.getMetaInformation().equals("Charging")) {
-				DataEvent<String, Boolean> deBat = 
-						(DataEvent<String, Boolean>) event;
-				Platform.runLater(()-> onCharging.set(deBat.getData().booleanValue()));
-			}
-		
+		//		if (event instanceof DataEvent) {
+		//			DataEvent<String,?> de = (DataEvent<String,?>) event;
+		//			if (de.getMetaInformation().equals("Battery")) {
+		//				DataEvent<String, Integer> deBat = 
+		//						(DataEvent<String, Integer>) event;
+		//				Platform.runLater(()-> onBatteryLoad.set(deBat.getData().intValue()));
+		//			}
+		//			if (de.getMetaInformation().equals("Supplying")) {
+		//				DataEvent<String, Boolean> deBat = 
+		//						(DataEvent<String, Boolean>) event;
+		//				Platform.runLater(()-> onSupplying.set(deBat.getData().booleanValue()));
+		//			}
+		//			if (de.getMetaInformation().equals("Charging")) {
+		//				DataEvent<String, Boolean> deBat = 
+		//						(DataEvent<String, Boolean>) event;
+		//				Platform.runLater(()-> onCharging.set(deBat.getData().booleanValue()));
+		//			}
+		if (event instanceof StrBoolDataEvent) {
+			StrBoolDataEvent de = (StrBoolDataEvent) event;
+			if (de.getMetaInformation().equals("Supplying"))
+				Platform.runLater(()-> onSupplying.set(de.getData().booleanValue()));
+			if (de.getMetaInformation().equals("Charging"))
+				Platform.runLater(()-> onCharging.set(de.getData().booleanValue()));
+		}
+		if (event instanceof StrIntDataEvent) {
+			StrIntDataEvent de = (StrIntDataEvent) event;
+			if (de.getMetaInformation().equals("Battery"))
+				Platform.runLater(()-> onBatteryLoad.set(de.getData().intValue()));
 		}
 	}
 

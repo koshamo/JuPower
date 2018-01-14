@@ -23,6 +23,8 @@ import com.github.koshamo.fiddler.EventHandler;
 import com.github.koshamo.fiddler.ExitEvent;
 import com.github.koshamo.fiddler.MessageBus;
 import com.github.koshamo.fiddler.MessageBus.ListenerType;
+import com.github.koshamo.jupower.shared.StrBoolDataEvent;
+import com.github.koshamo.jupower.shared.StrIntDataEvent;
 import com.github.koshamo.jupower.shared.Upower;
 
 /**
@@ -128,7 +130,7 @@ public class UpowerModule implements EventHandler {
 		private void checkBattery(String device) {
 			int load = UpowerConnector.getBatteryLoad(device);
 			messageBus.postEvent(
-					new DataEvent<String, Integer>(
+					new StrIntDataEvent(
 							UpowerModule.this, null, "Battery", Integer.valueOf(load)));
 		}
 		
@@ -165,14 +167,14 @@ public class UpowerModule implements EventHandler {
 		private void checkSupplying(String device) {
 			boolean supplying = UpowerConnector.isSupplying(device);
 			messageBus.postEvent(
-					new DataEvent<String, Boolean>(
+					new StrBoolDataEvent(
 							UpowerModule.this, null, "Supplying", Boolean.valueOf(supplying)));
 		}
 
 		private void checkCharging(String device) {
 			boolean charging = UpowerConnector.isCharging(device);
 			messageBus.postEvent(
-					new DataEvent<String, Boolean>(
+					new StrBoolDataEvent(
 							UpowerModule.this, null, "Charging", Boolean.valueOf(charging)));
 		}
 
