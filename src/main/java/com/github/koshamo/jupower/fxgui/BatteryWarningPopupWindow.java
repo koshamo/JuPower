@@ -37,7 +37,7 @@ import javafx.util.Duration;
  */
 public class BatteryWarningPopupWindow extends Stage {
 
-	public enum WarningType { EARLY, URGENT };
+	public enum WarningType { EARLY, URGENT }
 	private final int BORDER_SIZE = 20;
 	
 	private int batteryLoad;

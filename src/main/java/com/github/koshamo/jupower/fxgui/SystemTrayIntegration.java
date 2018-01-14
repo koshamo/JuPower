@@ -18,7 +18,6 @@ package com.github.koshamo.jupower.fxgui;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;

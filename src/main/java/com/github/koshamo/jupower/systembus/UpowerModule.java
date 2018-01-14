@@ -17,7 +17,6 @@ package com.github.koshamo.jupower.systembus;
 
 import java.util.List;
 
-import com.github.koshamo.fiddler.DataEvent;
 import com.github.koshamo.fiddler.Event;
 import com.github.koshamo.fiddler.EventHandler;
 import com.github.koshamo.fiddler.ExitEvent;
