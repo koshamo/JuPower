@@ -37,7 +37,7 @@ public class UpowerConnector {
 	
 	
 	public static String getVersion() {
-		List<String> list = 
+		final List<String> list = 
 				listInfos(Upower.UPOWER_CMD.getKey(), Upower.VERSION_CMD.getKey());
 		int start = 0;
 		for (String line : list) {
@@ -58,41 +58,42 @@ public class UpowerConnector {
 		return listInfos(Upower.UPOWER_CMD.getKey(), Upower.DEVICES_CMD.getKey());
 	}
 	
-	public static void printInfo(String device) {
-		List<String> infos = 
+	public static void printInfo(final String device) {
+		final List<String> infos = 
 				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), device);
 		infos.forEach(System.out::println);
 	}
 	
-	public static int getBatteryLoad(String battery) {
-		List<String> infos = 
+	public static int getBatteryLoad(final String battery) {
+		final List<String> infos = 
 				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), battery);
-		Optional<String> opt = findValue(infos, Upower.BATTERY_LOAD_KEY.getKey());
+		final Optional<String> opt = findValue(infos, Upower.BATTERY_LOAD_KEY.getKey());
 		if (opt.isPresent())
 			return Integer.valueOf(opt.get().substring(0, opt.get().length()-1)).intValue();
 		return 0;
 	}
 	
-	public static boolean isCharging(String battery) {
-		List<String> infos = 
+	public static boolean isCharging(final String battery) {
+		final List<String> infos = 
 				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), battery);
-		Optional<String> opt = findValue(infos, Upower.CHARGING_KEY.getKey());
+		final Optional<String> opt = findValue(infos, Upower.CHARGING_KEY.getKey());
 		if (opt.isPresent() && opt.get().equals(Upower.CHARGING_VALUE.getKey()))
 			return true;
 		return false;
 	}
 
-	public static boolean isSupplying(String linePower) {
-		List<String> infos = 
+	public static boolean isSupplying(final String linePower) {
+		final List<String> infos = 
 				listInfos(Upower.UPOWER_CMD.getKey(), Upower.DETAILS_CMD.getKey(), linePower);
-		Optional<String> opt = findValue(infos, Upower.SUPPLYING_KEY.getKey()); 
+		final Optional<String> opt = findValue(infos, Upower.SUPPLYING_KEY.getKey()); 
 		if (opt.isPresent() && opt.get().equals(Upower.SUPPLYING_VALUE.getKey()))
 			return true;
 		else
 			return false;
 	}
 	
-	private static Optional<String> findValue(List<String> list, String key) {
+	private static Optional<String> findValue(
+			final List<String> list, final String key) {
 		if (list.isEmpty())
 			return Optional.empty();
 		return list.stream()
@@ -103,14 +104,13 @@ public class UpowerConnector {
 				.findAny();
 	}
 	
-	private static List<String> listInfos(String... cmdarray) {
+	private static List<String> listInfos(final String... cmdarray) {
 		ProcessBuilder pb = new ProcessBuilder(cmdarray);
-		List<String> info = new ArrayList<>();
-		Process pro = null;
+		final List<String> info = new ArrayList<>();
 		try {
-			pro = pb.start();
+			final Process pro = pb.start();
 			pro.waitFor();
-			BufferedReader bis = new BufferedReader(
+			final BufferedReader bis = new BufferedReader(
 					new InputStreamReader(pro.getInputStream()));
 			String line;
 			while ((line = bis.readLine()) != null)

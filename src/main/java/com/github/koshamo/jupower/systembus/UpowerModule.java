@@ -23,6 +23,7 @@ import com.github.koshamo.fiddler.EventHandler;
 import com.github.koshamo.fiddler.ExitEvent;
 import com.github.koshamo.fiddler.MessageBus;
 import com.github.koshamo.fiddler.MessageBus.ListenerType;
+import com.github.koshamo.jupower.shared.EventKeys;
 import com.github.koshamo.jupower.shared.StrBoolDataEvent;
 import com.github.koshamo.jupower.shared.StrIntDataEvent;
 import com.github.koshamo.jupower.shared.Upower;
@@ -43,7 +44,7 @@ public class UpowerModule implements EventHandler {
 	private ChargingChecker chargingChecker;
 	List<String> devices;
 	
-	public UpowerModule(MessageBus messageBus) {
+	public UpowerModule(final MessageBus messageBus) {
 		this.messageBus = messageBus;
 		// check if Upower is available
 		if (UpowerConnector.getVersion() == null) {
@@ -65,7 +66,7 @@ public class UpowerModule implements EventHandler {
 	 * @see com.github.koshamo.fiddler.EventHandler#handle(com.github.koshamo.fiddler.Event)
 	 */
 	@Override
-	public void handle(Event event) {
+	public void handle(final Event event) {
 		// TODO Auto-generated method stub
 
 	}
@@ -84,6 +85,13 @@ public class UpowerModule implements EventHandler {
 	private class DeviceChecker implements Runnable {
 
 		private boolean run = true;
+		/**
+		 * 
+		 */
+		public DeviceChecker() {
+			// TODO Auto-generated constructor stub
+		}
+
 		/* (non-Javadoc)
 		 * @see java.lang.Runnable#run()
 		 */
@@ -109,6 +117,13 @@ public class UpowerModule implements EventHandler {
 	private class BatteryChecker implements Runnable {
 
 		private boolean run = true;
+		/**
+		 * 
+		 */
+		public BatteryChecker() {
+			// TODO Auto-generated constructor stub
+		}
+
 		/* (non-Javadoc)
 		 * @see java.lang.Runnable#run()
 		 */
@@ -127,11 +142,11 @@ public class UpowerModule implements EventHandler {
 			}
 		}
 		
-		private void checkBattery(String device) {
+		private void checkBattery(final String device) {
 			int load = UpowerConnector.getBatteryLoad(device);
 			messageBus.postEvent(
 					new StrIntDataEvent(
-							UpowerModule.this, null, "Battery", Integer.valueOf(load)));
+							UpowerModule.this, null, EventKeys.BATTERY.getKey(), Integer.valueOf(load)));
 		}
 		
 		public void stop() {
@@ -143,6 +158,13 @@ public class UpowerModule implements EventHandler {
 	private class ChargingChecker implements Runnable {
 
 		private boolean run = true;
+		/**
+		 * 
+		 */
+		public ChargingChecker() {
+			// TODO Auto-generated constructor stub
+		}
+
 		/* (non-Javadoc)
 		 * @see java.lang.Runnable#run()
 		 */
@@ -164,18 +186,18 @@ public class UpowerModule implements EventHandler {
 			}
 		}
 		
-		private void checkSupplying(String device) {
+		private void checkSupplying(final String device) {
 			boolean supplying = UpowerConnector.isSupplying(device);
 			messageBus.postEvent(
 					new StrBoolDataEvent(
-							UpowerModule.this, null, "Supplying", Boolean.valueOf(supplying)));
+							UpowerModule.this, null, EventKeys.SUPPLYING.getKey(), Boolean.valueOf(supplying)));
 		}
 
-		private void checkCharging(String device) {
+		private void checkCharging(final String device) {
 			boolean charging = UpowerConnector.isCharging(device);
 			messageBus.postEvent(
 					new StrBoolDataEvent(
-							UpowerModule.this, null, "Charging", Boolean.valueOf(charging)));
+							UpowerModule.this, null, EventKeys.CHARGING.getKey(), Boolean.valueOf(charging)));
 		}
 
 		public void stop() {
