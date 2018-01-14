@@ -18,6 +18,7 @@ package com.github.koshamo.jupower.fxgui;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
@@ -39,8 +40,8 @@ import javafx.application.Platform;
 public class SystemTrayIntegration {
 
 	private final javafx.stage.Stage stage;
-	private SystemTray systemTray;
-	private TrayIcon trayIcon;
+	private final SystemTray systemTray;
+	private final TrayIcon trayIcon;
 	private final EventHandler eventSource;
 	private final MessageBus messageBus;
 	private final int WIDTH = 32;
@@ -58,10 +59,7 @@ public class SystemTrayIntegration {
 		this.stage = stage;
 		this.eventSource = eventSource;
 		this.messageBus = messageBus;
-		addAppToTray();
-	}
-	
-	private void addAppToTray()  {
+
 		// initialize AWT toolkit
 		Toolkit.getDefaultToolkit();
 		
@@ -72,6 +70,11 @@ public class SystemTrayIntegration {
 		}
 		systemTray = SystemTray.getSystemTray();
 		trayIcon = new TrayIcon(new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB));
+		
+		addAppToTray();
+	}
+	
+	private void addAppToTray()  {
 		updateIcon(0, false, false);
 		trayIcon.addActionListener(event -> Platform.runLater(this::toggleStageShowing));
 		
@@ -122,8 +125,8 @@ public class SystemTrayIntegration {
 		graphics.fillRect(0, 0, WIDTH, HEIGHT);
 
 		// draw battery outlines
-		Rectangle rectBody = new Rectangle(12, 5, 15, 23);
-		Rectangle rectSchnippel = new Rectangle(16, 2, 8, 3);
+		Rectangle rectBody = new Rectangle(12, 6, 15, 23);
+		Rectangle rectSchnippel = new Rectangle(16, 3, 8, 3);
 		graphics.setColor(Color.lightGray);
 		graphics.draw(rectBody);
 		graphics.draw(rectSchnippel);
@@ -136,21 +139,21 @@ public class SystemTrayIntegration {
 		else
 			graphics.setColor(Color.RED);
 		if (capacity > LOAD_COMPLETE)
-			graphics.fillRect(18, 3, 5, 2);
+			graphics.fillRect(18, 4, 5, 2);
 		if (capacity > LOAD_FULL)
 			// full
-			graphics.fillRect(14, 7, 12, 4);
+			graphics.fillRect(14, 8, 12, 4);
 		if (capacity > LOAD_MEDIUM_HIGH) 
 			// more than half
-			graphics.fillRect(14, 12, 12, 4); 
+			graphics.fillRect(14, 13, 12, 4); 
 		if (capacity > LOAD_MEDIUM_LOW) 
 			// less than half
-			graphics.fillRect(14, 17, 12, 4);
+			graphics.fillRect(14, 18, 12, 4);
 		if (capacity > LOAD_LOW) 
 			// low
-			graphics.fillRect(14, 22, 12, 4);
+			graphics.fillRect(14, 23, 12, 4);
 		// print always
-		graphics.fillRect(14, 27, 12, 1);
+		graphics.fillRect(14, 28, 12, 1);
 
 		// draw charging
 		graphics.setColor(Color.GRAY);
