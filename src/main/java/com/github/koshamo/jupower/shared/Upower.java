@@ -20,19 +20,19 @@ package com.github.koshamo.jupower.shared;
  *
  */
 public enum Upower {
-	UPOWER_CMD ("upower"),
-	VERSION_CMD ("-v"),
-	VERSION_KEY ("client"),
-	DEVICES_CMD ("-e"),
-	DETAILS_CMD ("-i"),
-	BATTERY_LOAD_KEY ("percentage"),
-	CHARGING_KEY ("state"),
-	CHARGING_VALUE ("charging"),
-	SUPPLYING_KEY ("online"),
-	SUPPLYING_VALUE ("yes"),
-	SPLITTER (":"),
-	BATTERY ("battery"),
-	LINE_POWER ("line_power");
+	UPOWER_CMD ("upower"), //$NON-NLS-1$
+	VERSION_CMD ("-v"), //$NON-NLS-1$
+	VERSION_KEY ("client"), //$NON-NLS-1$
+	DEVICES_CMD ("-e"), //$NON-NLS-1$
+	DETAILS_CMD ("-i"), //$NON-NLS-1$
+	BATTERY_LOAD_KEY ("percentage"), //$NON-NLS-1$
+	CHARGING_KEY ("state"), //$NON-NLS-1$
+	CHARGING_VALUE ("charging"), //$NON-NLS-1$
+	SUPPLYING_KEY ("online"), //$NON-NLS-1$
+	SUPPLYING_VALUE ("yes"), //$NON-NLS-1$
+	SPLITTER (":"), //$NON-NLS-1$
+	BATTERY ("battery"), //$NON-NLS-1$
+	LINE_POWER ("line_power"); //$NON-NLS-1$
 	
 	private final String key;
 	

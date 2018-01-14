@@ -20,9 +20,9 @@ package com.github.koshamo.jupower.shared;
  *
  */
 public enum EventKeys {
-	BATTERY ("Battery"),
-	CHARGING ("Charging"),
-	SUPPLYING ("Supplying");
+	BATTERY ("Battery"), //$NON-NLS-1$
+	CHARGING ("Charging"), //$NON-NLS-1$
+	SUPPLYING ("Supplying"); //$NON-NLS-1$
 	
 	private final String key;
 	
