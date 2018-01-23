@@ -1,5 +1,5 @@
 /*
- * Copyright [2017] [Dr. Jochen Raßler]
+ * Copyright [2017] [Dr. Jochen RaÃŸler]
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,19 @@
  */
 package com.github.koshamo.jupower.fxgui;
 
+import java.applet.AppletContext;
 import java.awt.AWTException;
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
-import java.awt.Rectangle;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeSupport;
 
 import com.github.koshamo.fiddler.EventHandler;
 import com.github.koshamo.fiddler.ExitEvent;
@@ -52,7 +55,7 @@ public class SystemTrayIntegration {
 	private final int LOAD_MEDIUM_HIGH = 49;
 	private final int LOAD_FULL = 79;
 	private final int LOAD_COMPLETE = 97;
-
+	
 	public SystemTrayIntegration (final javafx.stage.Stage stage, 
 			final EventHandler eventSource, final MessageBus messageBus) {
 		this.stage = stage;
@@ -67,6 +70,10 @@ public class SystemTrayIntegration {
 			System.out.println("System Tray is not supported on this system!");
 			messageBus.postEvent(new ExitEvent(eventSource, null));
 		}
+		GraphicsEnvironment
+				.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice()
+				.getDefaultConfiguration();
 		systemTray = SystemTray.getSystemTray();
 		trayIcon = new TrayIcon(new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB));
 		
@@ -88,7 +95,6 @@ public class SystemTrayIntegration {
 		popup.add(itmShowHide);
 		popup.add(itmExit);
 		trayIcon.setPopupMenu(popup);
-		
 		
 		try {
 			systemTray.add(trayIcon);
@@ -118,17 +124,15 @@ public class SystemTrayIntegration {
 			System.out.println("Capacity error");
 		}
 		// create image, fill background black
-		BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = image.createGraphics();
+		Image offscrnImage = trayIcon.getImage();
+		Graphics graphics = offscrnImage.getGraphics();
 		graphics.setColor(Color.BLACK);
 		graphics.fillRect(0, 0, WIDTH, HEIGHT);
 
 		// draw battery outlines
-		Rectangle rectBody = new Rectangle(12, 6, 15, 23);
-		Rectangle rectSchnippel = new Rectangle(16, 3, 8, 3);
 		graphics.setColor(Color.lightGray);
-		graphics.draw(rectBody);
-		graphics.draw(rectSchnippel);
+		graphics.drawRect(12, 6, 15, 23);
+		graphics.drawRect(16, 3, 8, 3);
 
 		// draw battery fillings depending on capacity
 		if (capacity > YELLOW_UPPER_BOUND)
@@ -166,8 +170,13 @@ public class SystemTrayIntegration {
 			graphics.fillRect(5, 18, 2, 7);
 			graphics.fillRect(3, 18, 6, 2);
 		}
-
-		trayIcon.setImage(image);
+	
+		Toolkit.getDefaultToolkit().sync();
+		
+		// need this line of code to secure update method is called
+		// and image is redrawn immediately
+		trayIcon.setImageAutoSize(false);
+		
 		String tooltip;
 		if (supplying)
 			if (charging)
