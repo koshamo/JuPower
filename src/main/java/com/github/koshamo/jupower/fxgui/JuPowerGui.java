@@ -29,7 +29,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -61,9 +63,11 @@ public class JuPowerGui extends FiddlerFxApp {
 				});
 		
 		HBox hbox = new HBox();
+		hbox.getChildren().addAll(buildMainPane());
 		
-		primaryStage.setScene(new Scene(hbox, 200, 100));
+		primaryStage.setScene(new Scene(hbox));
 		primaryStage.setTitle("JuPower");
+		primaryStage.sizeToScene();
 		// prevent application to be closed, when last window is closed
 		Platform.setImplicitExit(false);
 		
@@ -72,6 +76,15 @@ public class JuPowerGui extends FiddlerFxApp {
 	}
 
 	
+	/**
+	 * @return
+	 */
+	private Node buildMainPane() {
+		Label lbl = new Label("currently no content available");
+		return lbl;
+	}
+
+
 	private void createProperties() {
 		onBatteryLoad = new SimpleIntegerProperty(0);
 		onSupplying = new SimpleBooleanProperty(false);
