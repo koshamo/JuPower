@@ -3,7 +3,7 @@ import com.github.koshamo.fiddler.MessageBus;
 import com.github.koshamo.fiddler.jfx.FiddlerFxApp;
 import com.github.koshamo.fiddler.jfx.FiddlerFxAppRunner;
 import com.github.koshamo.jupower.fxgui.JuPowerGui;
-import com.github.koshamo.jupower.systembus.UpowerModule;
+import com.github.koshamo.jupower.upower.UpowerModule;
 
 /*
  * Copyright [2017] [Dr. Jochen Raßler]
@@ -22,12 +22,18 @@ import com.github.koshamo.jupower.systembus.UpowerModule;
  */
 
 /**
+ * 
+ * JuPower is the entry class for JuPower application.
+ * 
  * @author jochen
  *
  */
 public class JuPower {
 
 	/**
+	 * The main method creates and starts the message bus and all modules
+	 * that are needed to run the application.
+	 * Current modules: JavaFX GUI and Upower integration 
 	 * @param args
 	 */
 	public static void main(String[] args) {

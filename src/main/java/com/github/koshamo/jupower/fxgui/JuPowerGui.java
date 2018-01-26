@@ -36,12 +36,20 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
+ * JuPowerGui is the actual GUI for the JuPower application.
+ * 
+ * Notice that this class is extended from FiddlerFxApp, not javafx.application
+ * and the applications entry point is in JuPower.java
+ * 
+ * @author jochen
+ *
+ */
+/**
  * @author jochen
  *
  */
 public class JuPowerGui extends FiddlerFxApp {
 
-//	private Stage primaryStage;
 	SystemTrayIntegration systemTray;
 	IntegerProperty onBatteryLoad;
 	BooleanProperty onSupplying;
@@ -52,12 +60,13 @@ public class JuPowerGui extends FiddlerFxApp {
 	
 
 	/* (non-Javadoc)
+	 * general GUI definition in start...
+	 * 
 	 * @see javafx.application.Application#start(javafx.stage.Stage)
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-//		this.primaryStage = primaryStage;
-
+		
 		javax.swing.SwingUtilities.invokeLater(
 				() -> { systemTray = new SystemTrayIntegration(primaryStage, this, getMessageBus()); 
 				});
@@ -77,7 +86,9 @@ public class JuPowerGui extends FiddlerFxApp {
 
 	
 	/**
-	 * @return
+	 * this method creates the main content pane for the GUI
+	 * 
+	 * @return the content pane
 	 */
 	private Node buildMainPane() {
 		Label lbl = new Label("currently no content available");
@@ -85,6 +96,10 @@ public class JuPowerGui extends FiddlerFxApp {
 	}
 
 
+	/**
+	 * this method needs to be called in start and creates the properties
+	 * as well as the functionality for their listeners
+	 */
 	private void createProperties() {
 		onBatteryLoad = new SimpleIntegerProperty(0);
 		onSupplying = new SimpleBooleanProperty(false);
@@ -125,6 +140,11 @@ public class JuPowerGui extends FiddlerFxApp {
 	
 	
 	/* (non-Javadoc)
+	 * 
+	 * shutdown is called by the message bus, if a module sends a application
+	 * exit signal. Thus we need to clear things up and prepare for application
+	 * exit
+	 * 
 	 * @see com.github.koshamo.fiddler.EventHandler#shutdown()
 	 */
 	@Override
@@ -134,6 +154,9 @@ public class JuPowerGui extends FiddlerFxApp {
 	}
 	
 	/* (non-Javadoc)
+	 * 
+	 * handle cares for incoming signals via message bus
+	 * 
 	 * @see com.github.koshamo.fiddler.EventHandler#handle(com.github.koshamo.fiddler.Event)
 	 */
 	@Override

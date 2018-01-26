@@ -15,7 +15,6 @@
  */
 package com.github.koshamo.jupower.fxgui;
 
-import java.applet.AppletContext;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -27,7 +26,7 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeSupport;
+import java.util.Objects;
 
 import com.github.koshamo.fiddler.EventHandler;
 import com.github.koshamo.fiddler.ExitEvent;
@@ -36,6 +35,11 @@ import com.github.koshamo.fiddler.MessageBus;
 import javafx.application.Platform;
 
 /**
+ * SystemTrayIntegration creates the system tray icon and adds it to the 
+ * system tray - if supported
+ * the update method draws the icon using the given data to decide which
+ * state the battery symbol should show.
+ * 
  * @author jochen
  *
  */
@@ -56,11 +60,30 @@ public class SystemTrayIntegration {
 	private final int LOAD_FULL = 79;
 	private final int LOAD_COMPLETE = 97;
 	
+	/**
+	 * The constructor checks, if system tray is supported and creates the 
+	 * system tray icon.
+	 * 
+	 * As this class can show / hide the application window, the stage object
+	 * for the application must be provided.
+	 * 
+	 * The class provides a context menu, which can perform transactions.
+	 * These transactions use the message bus to connect to other modules,
+	 * but SystemTrayIntegration by itself is no message bus module. Thus
+	 * this class needs the reference to its message bus module and the 
+	 * message bus, to send requests to the message bus (which need the 
+	 * senders source)  
+	 * 
+	 * @param stage			the stage connected to this class with the
+	 * application window to show / hide
+	 * @param eventSource	the message module, where this class belongs to
+	 * @param messageBus	the message bus to send signals
+	 */
 	public SystemTrayIntegration (final javafx.stage.Stage stage, 
 			final EventHandler eventSource, final MessageBus messageBus) {
-		this.stage = stage;
-		this.eventSource = eventSource;
-		this.messageBus = messageBus;
+		this.stage = Objects.requireNonNull(stage);
+		this.eventSource = Objects.requireNonNull(eventSource);
+		this.messageBus = Objects.requireNonNull(messageBus);
 
 		// initialize AWT toolkit
 		Toolkit.getDefaultToolkit();
@@ -80,6 +103,11 @@ public class SystemTrayIntegration {
 		addAppToTray();
 	}
 	
+	/**
+	 * this method creates the pop-up menu for the system tray icon and 
+	 * calls the method (update) to create a default view for the icon.
+	 * Finally the tray icon is added to the system tray.
+	 */
 	private void addAppToTray()  {
 		updateIcon(0, false, false);
 		trayIcon.addActionListener(event -> Platform.runLater(this::toggleStageShowing));
@@ -105,6 +133,9 @@ public class SystemTrayIntegration {
 		
 	}
 	
+	/**
+	 *	show / hide the application window 
+	 */
 	private void toggleStageShowing() {
 		if (stage.isShowing()) {
 			stage.setIconified(true);
@@ -117,9 +148,18 @@ public class SystemTrayIntegration {
 		}
 	}
 	
-	public void updateIcon(final int capacity, final boolean supplying, 
+	/**
+	 * as soon as a battery parameter changes, this method should be called
+	 * to redraw the system tray icon to show the current state.
+	 *  
+	 * @param load		the current battery load in percent
+	 * @param supplying	is the battery on line (using line power or battery power)
+	 * @param charging	is the battery charging (if not supplied, it can not 
+	 * be charged, but if the battery is fully charged, we do not charge further)
+	 */
+	public void updateIcon(final int load, final boolean supplying, 
 			final boolean charging) {
-		if (capacity < 0 || capacity > 100) {
+		if (load < 0 || load > 100) {
 			// TODO: seriously handle capacity check
 			System.out.println("Capacity error");
 		}
@@ -135,24 +175,24 @@ public class SystemTrayIntegration {
 		graphics.drawRect(16, 3, 8, 3);
 
 		// draw battery fillings depending on capacity
-		if (capacity > YELLOW_UPPER_BOUND)
+		if (load > YELLOW_UPPER_BOUND)
 			graphics.setColor(Color.GREEN);
-		else if (capacity > RED_UPPER_BOUND)
+		else if (load > RED_UPPER_BOUND)
 			graphics.setColor(Color.YELLOW);
 		else
 			graphics.setColor(Color.RED);
-		if (capacity > LOAD_COMPLETE)
+		if (load > LOAD_COMPLETE)
 			graphics.fillRect(18, 4, 5, 2);
-		if (capacity > LOAD_FULL)
+		if (load > LOAD_FULL)
 			// full
 			graphics.fillRect(14, 8, 12, 4);
-		if (capacity > LOAD_MEDIUM_HIGH) 
+		if (load > LOAD_MEDIUM_HIGH) 
 			// more than half
 			graphics.fillRect(14, 13, 12, 4); 
-		if (capacity > LOAD_MEDIUM_LOW) 
+		if (load > LOAD_MEDIUM_LOW) 
 			// less than half
 			graphics.fillRect(14, 18, 12, 4);
-		if (capacity > LOAD_LOW) 
+		if (load > LOAD_LOW) 
 			// low
 			graphics.fillRect(14, 23, 12, 4);
 		// print always
@@ -180,11 +220,11 @@ public class SystemTrayIntegration {
 		String tooltip;
 		if (supplying)
 			if (charging)
-				tooltip = capacity + "%, charging";
+				tooltip = load + "%, charging";
 			else
-				tooltip = "on line power, battery: " + capacity + "%";
+				tooltip = "on line power, battery: " + load + "%";
 		else
-			tooltip = "on battery: " + capacity + "%";
+			tooltip = "on battery: " + load + "%";
 		trayIcon.setToolTip(tooltip);
 	}
 

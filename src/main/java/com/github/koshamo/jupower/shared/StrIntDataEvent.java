@@ -19,16 +19,22 @@ import com.github.koshamo.fiddler.DataEvent;
 import com.github.koshamo.fiddler.EventHandler;
 
 /**
+ * This class provides a concrete DataEvent based on a String key and a 
+ * Integer value, such as to describethe battery load, etc.
+ * 
  * @author jochen
  *
  */
 public class StrIntDataEvent extends DataEvent<String, Integer> {
 
 	/**
-	 * @param source
-	 * @param target
-	 * @param meta
-	 * @param data
+	 * constructor inherited from super class to consrtuct a data event
+	 * 
+	 * @param source	the sender of this event
+	 * @param target	the target of this event, may be null
+	 * @param meta		the the meta-data description, which gives information 
+	 * about the delivered data 
+	 * @param data		the actual data as Integer value
 	 */
 	public StrIntDataEvent(EventHandler source, EventHandler target, String meta, Integer data) {
 		super(source, target, meta, data);

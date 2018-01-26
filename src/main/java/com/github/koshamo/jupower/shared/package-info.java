@@ -13,30 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.koshamo.jupower.shared;
-
 /**
- * This enum describes the keys for Events sent by the Upower connector
+ * the shared package holds all classes and enums common to all packages.
+ * Here are mainly Event subclasses and enums to describe keys used in Event
+ * classes.
  * 
  * @author jochen
  *
  */
-public enum EventKeys {
-	BATTERY ("Battery"), //$NON-NLS-1$
-	CHARGING ("Charging"), //$NON-NLS-1$
-	SUPPLYING ("Supplying"); //$NON-NLS-1$
-	
-	private final String key;
-	
-	EventKeys (String key) {
-		this.key = key;
-	}
-	
-	/**
-	 * access to the key
-	 * @return	the key as String
-	 */
-	public String getKey() {
-		return key;
-	}
-}
+package com.github.koshamo.jupower.shared;

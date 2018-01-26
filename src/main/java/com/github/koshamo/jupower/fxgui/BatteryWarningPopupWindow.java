@@ -32,23 +32,35 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 /**
+ * This class implements the pop-up window, that is shown, when battery load
+ * falls under certain thresholds.
+ * 
  * @author jochen
  *
  */
 public class BatteryWarningPopupWindow extends Stage {
 
 	public enum WarningType { EARLY, URGENT }
+	private final Color COLOR_EARLY = Color.ORANGE;
+	private final Color COLOR_URGENT = Color.RED;
 	private final int BORDER_SIZE = 20;
 	
 	private int batteryLoad;
 	private WarningType type;
 	
+	/**
+	 * The constructor initializes the default state of the pop-up window
+	 */
 	public BatteryWarningPopupWindow() {
 		this.setAlwaysOnTop(true);
 		this.initModality(Modality.NONE);
 		this.initStyle(StageStyle.UNDECORATED);
 	}
 	
+	/**
+	 * buildContent creates the actual pop up window and is called by the
+	 * stage.show() method
+	 */
 	private void buildContent() {
 		StackPane pane = new StackPane();
 		pane.setAlignment(Pos.CENTER);
@@ -57,9 +69,9 @@ public class BatteryWarningPopupWindow extends Stage {
 		double maxHeight = screen.getHeight() * 0.2;
 		Rectangle border;
 		if (type == WarningType.EARLY)
-			border = new Rectangle(maxWidth, maxHeight, Color.ORANGE);
+			border = new Rectangle(maxWidth, maxHeight, COLOR_EARLY);
 		else
-			border = new Rectangle(maxWidth, maxHeight, Color.RED);
+			border = new Rectangle(maxWidth, maxHeight, COLOR_URGENT);
 		Rectangle inlay = new Rectangle(
 				maxWidth - BORDER_SIZE, maxHeight - BORDER_SIZE, Color.WHITE);
 		String text = "Battery Power is low: " + batteryLoad + "%";
@@ -77,6 +89,17 @@ public class BatteryWarningPopupWindow extends Stage {
 		this.setScene(scene);
 	}
 	
+	/**
+	 * to display this pop-up window, you need to call show on the created
+	 * object. 
+	 * batteyLoad and type are used, to flexibly configue the current pop-up
+	 * window, where batteryLoad is the current load and type can be info like
+	 * warning and urgent warning to inform the user to charge the battery. See
+	 * enum WarningType for type configuration.
+	 * 
+	 * @param batteryLoad
+	 * @param type
+	 */
 	public void show(int batteryLoad, WarningType type) {
 		this.batteryLoad = batteryLoad;
 		this.type = type;

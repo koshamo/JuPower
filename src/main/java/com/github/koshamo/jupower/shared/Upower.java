@@ -16,6 +16,14 @@
 package com.github.koshamo.jupower.shared;
 
 /**
+ * This enum provides keys to control the upower tool.
+ * First, the actual upower comand  is given
+ * Second, the possible parameters to get system information is given
+ * Third, parsing strings to get the information from the return values are given
+ * 
+ *  currently used upower version: 0.99.4
+ *  these options may be changed with a different version!
+ *  
  * @author jochen
  *
  */
@@ -40,6 +48,10 @@ public enum Upower {
 		this.key = key;
 	}
 	
+	/**
+	 * get the key in its String representation
+	 * @return	the key as String
+	 */
 	public String getKey() {
 		return key;
 	}
