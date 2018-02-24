@@ -166,9 +166,74 @@ public class SystemTrayIntegration {
 		// create image, fill background black
 		Image offscrnImage = trayIcon.getImage();
 		Graphics graphics = offscrnImage.getGraphics();
+		drawIcon32x32(graphics, load, supplying);
+	
+		Toolkit.getDefaultToolkit().sync();
+		
+		// need this line of code to secure update method is called
+		// and image is redrawn immediately
+		trayIcon.setImageAutoSize(false);
+		
+		String tooltip;
+		if (supplying)
+			if (charging)
+				tooltip = load + "%, charging";
+			else
+				tooltip = "on line power, battery: " + load + "%";
+		else
+			tooltip = "on battery: " + load + "%";
+		trayIcon.setToolTip(tooltip);
+	}
+
+	/**
+	 * draws the Icon for a 32x32 pixel image 
+	 * @param graphics	the graphics context to be drawn on
+	 * @param load		the current battery load 
+	 * @param supplying	the current supplying /in-line status
+	 */
+	private void drawIcon32x32(Graphics graphics, final int load, final boolean supplying) {
+		drawImageBackground(graphics);
+
+		drawBattery32x32(graphics, load);
+
+		drawCharging32x32(graphics, supplying);
+	}
+
+	/**
+	 * draws the image background
+	 * @param graphics	the graphics context to be drawn on
+	 */
+	private void drawImageBackground(Graphics graphics) {
 		graphics.setColor(Color.BLACK);
 		graphics.fillRect(0, 0, WIDTH, HEIGHT);
+	}
 
+	/**
+	 * draws the charging area of the image
+	 * @param graphics	the graphics context to be drawn on
+	 * @param supplying	the current supplying / on-line status
+	 */
+	private void drawCharging32x32(Graphics graphics, final boolean supplying) {
+		// draw charging
+		graphics.setColor(Color.GRAY);
+		if (supplying) {
+			graphics.fillRect(5, 6, 2, 20);
+			graphics.fillRect(3, 14, 6, 4);
+		}
+		else {
+			graphics.fillRect(5, 6, 2, 7);
+			graphics.fillRect(3, 11, 6, 2);
+			graphics.fillRect(5, 18, 2, 7);
+			graphics.fillRect(3, 18, 6, 2);
+		}
+	}
+
+	/**
+	 * draws the battery area of the image
+	 * @param graphics	the graphics context to be drawn on
+	 * @param load		the current battery load
+	 */
+	private void drawBattery32x32(Graphics graphics, final int load) {
 		// draw battery outlines
 		graphics.setColor(Color.lightGray);
 		graphics.drawRect(12, 6, 15, 23);
@@ -197,35 +262,6 @@ public class SystemTrayIntegration {
 			graphics.fillRect(14, 23, 12, 4);
 		// print always
 		graphics.fillRect(14, 28, 12, 1);
-
-		// draw charging
-		graphics.setColor(Color.GRAY);
-		if (supplying) {
-			graphics.fillRect(5, 6, 2, 20);
-			graphics.fillRect(3, 14, 6, 4);
-		}
-		else {
-			graphics.fillRect(5, 6, 2, 7);
-			graphics.fillRect(3, 11, 6, 2);
-			graphics.fillRect(5, 18, 2, 7);
-			graphics.fillRect(3, 18, 6, 2);
-		}
-	
-		Toolkit.getDefaultToolkit().sync();
-		
-		// need this line of code to secure update method is called
-		// and image is redrawn immediately
-		trayIcon.setImageAutoSize(false);
-		
-		String tooltip;
-		if (supplying)
-			if (charging)
-				tooltip = load + "%, charging";
-			else
-				tooltip = "on line power, battery: " + load + "%";
-		else
-			tooltip = "on battery: " + load + "%";
-		trayIcon.setToolTip(tooltip);
 	}
 
 }
