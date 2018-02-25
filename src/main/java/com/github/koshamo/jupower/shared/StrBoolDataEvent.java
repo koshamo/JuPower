@@ -15,8 +15,6 @@
  */
 package com.github.koshamo.jupower.shared;
 
-import java.util.Objects;
-
 import com.github.koshamo.fiddler.DataEvent;
 import com.github.koshamo.fiddler.EventHandler;
 

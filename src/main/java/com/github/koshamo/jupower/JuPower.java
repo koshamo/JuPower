@@ -36,6 +36,7 @@ public class JuPower {
 	 * Current modules: JavaFX GUI and Upower integration 
 	 * @param args
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		MessageBus messageBus = new MessageBus();
 		new Thread(new FiddlerFxAppRunner(JuPowerGui.class, args)).start();
