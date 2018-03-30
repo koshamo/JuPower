@@ -55,6 +55,7 @@ public class JuPowerGui extends FiddlerFxApp {
 	BooleanProperty onSupplying;
 	BooleanProperty onCharging;
 	
+	private final int STARTUP_TRIES = 5;
 	private final int EARLY_WARNING = 20;
 	private final int URGENT_WARNING = 7;
 	
@@ -80,11 +81,45 @@ public class JuPowerGui extends FiddlerFxApp {
 		// prevent application to be closed, when last window is closed
 		Platform.setImplicitExit(false);
 		
+		setTrayIcon();
 		createProperties();
 		getMessageBus().registerAllEvents(this, ListenerType.TARGET);
 	}
 
 	
+	/**
+	 * 
+	 */
+	private void setTrayIcon() {
+		int count = 0;
+		while (count < STARTUP_TRIES) {
+			if (systemTray == null) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else
+				break;
+			++count;
+		}
+		count = 0;
+		while (count < STARTUP_TRIES) {
+			if (!systemTray.initTrayIcon()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else
+				break;
+			++count;
+		}
+	}
+
+
 	/**
 	 * this method creates the main content pane for the GUI
 	 * 

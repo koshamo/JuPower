@@ -46,8 +46,8 @@ import javafx.application.Platform;
 public class SystemTrayIntegration {
 
 	private final javafx.stage.Stage stage;
-	private final SystemTray systemTray;
-	private final TrayIcon trayIcon;
+	private SystemTray systemTray;
+	private TrayIcon trayIcon;
 	private final EventHandler eventSource;
 	private final MessageBus messageBus;
 	private final int WIDTH = 32;
@@ -97,10 +97,19 @@ public class SystemTrayIntegration {
 				.getLocalGraphicsEnvironment()
 				.getDefaultScreenDevice()
 				.getDefaultConfiguration();
-		systemTray = SystemTray.getSystemTray();
-		trayIcon = new TrayIcon(new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB));
 		
+	}
+
+	/**
+	 * 
+	 */
+	public boolean initTrayIcon() {
+		systemTray = SystemTray.getSystemTray();
+		if (systemTray == null) 
+			return false;
+		trayIcon = new TrayIcon(new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB));
 		addAppToTray();
+		return true;
 	}
 	
 	/**
